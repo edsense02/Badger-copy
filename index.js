@@ -78,16 +78,52 @@ app.get('/api/interfaces', (req, res) => {
 });
 
 
-// API to return download URL given plugin name
+// API to return download URL given plugin type and plugin name
 
-app.get('/api/:id', (req, res) => {
-    if ((algorithms.includes(req.params.id))   ||
-         environments.includes(req.params.id)  ||
-         extensions.includes(req.params.id)    ||
-         interfaces.includes(req.params.id)) {
-            res.send(`http://localhost:${port}/${req.params.id}.tar.gz`);
+app.get('/api/url/algorithms/:id', (req, res) => {
+    if (algorithms.includes(req.params.id)) {
+            res.send(`http://localhost:3000/${req.params.id}.tar.gz`);
     } else {
-        res.send('This plugin does not exist or is not available right now ...');
+        res.send('This algorithms plugin does not exist or is not available right now ...');
     }    
 });
+
+
+app.get('/api/url/environments/:id', (req, res) => {
+    if (environments.includes(req.params.id)) {
+            res.send(`http://localhost:3000/${req.params.id}.tar.gz`);
+    } else {
+        res.send('This environments plugin does not exist or is not available right now ...');
+    }    
+});
+
+
+app.get('/api/url/extensions/:id', (req, res) => {
+    if (extensions.includes(req.params.id)) {
+            res.send(`http://localhost:3000/${req.params.id}.tar.gz`);
+    } else {
+        res.send('This extensions plugin does not exist or is not available right now ...');
+    }    
+});
+
+
+app.get('/api/url/interfaces/:id', (req, res) => {
+    if (interfaces.includes(req.params.id)) {
+            res.send(`http://localhost:3000/${req.params.id}.tar.gz`);
+    } else {
+        res.send('This interfaces plugin does not exist or is not available right now ...');
+    }    
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
