@@ -4,6 +4,9 @@ from PyQt5.QtWidgets import QComboBox, QGridLayout, QVBoxLayout, QWidget, QLabel
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QApplication, QStyledItemDelegate
 from qdarkstyle import load_stylesheet, DarkPalette, LightPalette
 from ...settings import list_settings, read_value, write_value, BADGER_CORE_DICT, BADGER_PATH_DICT
+import os
+from os.path import exists
+
 
 class BadgerSettingsDialog(QDialog):
     theme_list = ['default', 'light', 'dark']
@@ -86,7 +89,7 @@ class BadgerSettingsDialog(QDialog):
         self.plugin_url_name = plugin_url_name = QLineEdit(read_value('BADGER_PLUGINS_URL'))
         grid.addWidget(plugin_url, 7, 0)
         grid.addWidget(plugin_url_name, 7, 1)
-
+            
         grid.setColumnStretch(1, 1)
 
         vbox.addWidget(widget_settings)
@@ -119,15 +122,20 @@ class BadgerSettingsDialog(QDialog):
         write_value('BADGER_THEME', theme)
 
     def apply_settings(self):   
+        roots = {'BADGER_PLUGIN_ROOT'   :   self.plugin_root_path.text(), 
+                 'BADGER_DB_ROOT'       :   self.db_root_path.text(), 
+                 'BADGER_LOGBOOK_ROOT'  :   self.logbook_root_path.text(), 
+                 'BADGER_ARCHIVE_ROOT'  :   self.archive_root_path.text(),
+                 'BADGER_CHECK_VAR_INTERVAL' :  self.var_int_val.text(), 
+                 'BADGER_CHECK_VAR_TIMEOUT'  :  self.var_time_val.text(), 
+                 'BADGER_PLUGINS_URL'   :   self.plugin_url_name.text()
+                }
+        for val in roots:
+            write_value(val, roots[val])
+            if val[-4:] == 'ROOT' and not exists(roots[val]):
+                os.mkdir(roots[val])
         self.accept()
-        write_value('BADGER_PLUGIN_ROOT', self.plugin_root_path.text())
-        write_value('BADGER_DB_ROOT', self.db_root_path.text())
-        write_value('BADGER_LOGBOOK_ROOT', self.logbook_root_path.text())
-        write_value('BADGER_ARCHIVE_ROOT', self.archive_root_path.text())
-        write_value('BADGER_CHECK_VAR_INTERVAL', self.var_int_val.text())
-        write_value('BADGER_CHECK_VAR_TIMEOUT', self.var_time_val.text())
-        write_value('BADGER_PLUGINS_URL', self.plugin_url_name.text())
-
+        
     def restore_settings(self):
         # Reset theme if needed
         theme_curr = read_value('BADGER_THEME')
@@ -139,13 +147,4 @@ class BadgerSettingsDialog(QDialog):
             write_value(key, self.settings[key])
 
         self.reject()
-
-    
-
-
-
-
-
-
-
 
